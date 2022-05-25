@@ -1,0 +1,24 @@
+From b91b13cbcaaf9311d549aed3117b4094c159afd1 Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Sun, 16 May 2021 11:04:37 -0400
+Subject: Edit __GENERIC_DIALOGS_IN_NATIVE_BUILDS_OBJECTS
+
+---
+ samples/dialogs/Makefile | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/samples/dialogs/Makefile b/samples/dialogs/Makefile
+index 5453fa0..af55235 100644
+--- a/samples/dialogs/Makefile
++++ b/samples/dialogs/Makefile
+@@ -110,8 +110,7 @@ __dialogs___win32rc = dialogs_sample_rc.o
+ #__GENERIC_DIALOGS_IN_NATIVE_BUILDS_OBJECTS \
+ #	= dialogs_colrdlgg.o dialogs_dirdlgg.o \
+ #	dialogs_filedlgg.o
+-__GENERIC_DIALOGS_IN_NATIVE_BUILDS_OBJECTS \
+-	= dialogs_filedlgg.o
++__GENERIC_DIALOGS_IN_NATIVE_BUILDS_OBJECTS =
+ COND_MONOLITHIC_0___WXLIB_CORE_p = \
+ 	-lwx_$(PORTNAME)$(WXUNIVNAME)$(WXUNICODEFLAG)$(WXDEBUGFLAG)$(WX_LIB_FLAVOUR)_core-$(WX_RELEASE)$(HOST_SUFFIX)
+ __WXLIB_CORE_p = $(COND_MONOLITHIC_0___WXLIB_CORE_p)
+-- 
