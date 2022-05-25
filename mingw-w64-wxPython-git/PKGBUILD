@@ -1,0 +1,105 @@
+# Maintainer: Alexey Pavlov <alexpux@gmail.com>
+# Contributor: Tim Stahlhut <stahta01@gmail.com>
+
+_realname=wxPython
+_sourcedir=${_realname}-git
+_wx_basever=3.1
+pkgbase=mingw-w64-${_realname}-git
+pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}-git"
+pkgver=4.1.1.r261.g3e6be81d
+pkgrel=1
+pkgdesc="A wxWidgets GUI toolkit for Python (mingw-w64)"
+provides=("${MINGW_PACKAGE_PREFIX}-${_realname}")
+conflicts=("${MINGW_PACKAGE_PREFIX}-${_realname}")
+arch=('any')
+mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clang32' 'clangarm64')
+license=("custom:wxWindows")
+url="https://www.wxpython.org/"
+depends=("${MINGW_PACKAGE_PREFIX}-python"
+         $( [[ ${MINGW_PACKAGE_PREFIX} == *-clang-* ]] || echo \
+           "${MINGW_PACKAGE_PREFIX}-python-numpy" )
+         "${MINGW_PACKAGE_PREFIX}-python-pillow"
+         "${MINGW_PACKAGE_PREFIX}-python-six"
+         "${MINGW_PACKAGE_PREFIX}-wxmsw${_wx_basever}")
+makedepends=("${MINGW_PACKAGE_PREFIX}-doxygen"
+             "${MINGW_PACKAGE_PREFIX}-python-requests"
+             "${MINGW_PACKAGE_PREFIX}-sip4"
+             "${MINGW_PACKAGE_PREFIX}-waf"
+             "${MINGW_PACKAGE_PREFIX}-cc"
+             # for waf
+             "python" "python-setuptools")
+options=('strip' 'staticlibs' 'buildflags')
+source=(${_sourcedir}::"git+https://github.com/wxWidgets/Phoenix.git"
+        '101-Return-new-wxBitmap.patch'
+        '201-Remove-obsolete-entries-from-Doxyfile.patch'
+        '301-Revert-some-of-python-sip-changes.patch')
+sha256sums=('SKIP'
+            'e5d70b32c5818092628ba2a986c8edfa039a61c7b4c512a48c2887b6bc504382'
+            '97b5c9dd353f2c570b7a940585868c1127d10a96a3442cd96706359410494aa8'
+            '26b3170ae09c909e43d0420acba5566477bfe528002bd7cbaa97fe0e2f0b1445')
+
+pkgver() {
+  cd ${srcdir}/${_sourcedir}
+  ( set -o pipefail
+    git describe --long 2>/dev/null | sed 's/wxPython-//g' | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+  )
+}
+
+prepare() {
+  cd "${srcdir}/${_sourcedir}"
+
+  git submodule update --init
+
+#  rm -f etg/{_,}webkit.py sip/gen/{_,}webkit.sip
+
+  # Fix likely logic bug detected by clang compiler
+  patch -Np1 -i ${srcdir}/101-Return-new-wxBitmap.patch
+
+  # Revert some changes
+  patch -Np1 -i ${srcdir}/301-Revert-some-of-python-sip-changes.patch
+
+  # Reduce warnings
+  cd "${srcdir}/${_sourcedir}/ext/wxWidgets"
+  patch -Np1 -i ${srcdir}/201-Remove-obsolete-entries-from-Doxyfile.patch
+}
+
+build() {
+  cd ${srcdir}/${_sourcedir}
+  export PYTHONDONTWRITEBYTECODE=1
+  MSYS2_ARG_CONV_EXCL="--prefix=;--install-scripts=;--install-platlib=" \
+  WAF="{$MINGW_PREFIX}/bin/waf" \
+  SIP="${MINGW_PREFIX}/bin/sip" \
+  DOXYGEN="${MINGW_PREFIX}/bin/doxygen" \
+  WX_CONFIG="${MINGW_PREFIX}/bin/wx-config-${_wx_basever}" \
+    "${MINGW_PREFIX}/bin/python" build.py \
+      --prefix="${MINGW_PREFIX}" --python="${MINGW_PREFIX}/bin/python.exe" \
+      --release --use_syswx --no_msedge --nodoc --cairo -vv \
+      --no_allmo --no_magic --regenerate_sysconfig \
+        dox touch etg sip
+
+  local _jobs=${MAKEFLAGS:--j1}
+  MSYS2_ARG_CONV_EXCL="--prefix=;--install-scripts=;--install-platlib=" \
+  CC_NAME=${CC} CXX_NAME=${CXX} \
+  LDFLAGS="${LDFLAGS} $(python-config --ldflags)" \
+  PYTHON_CONFIG="${MINGW_PREFIX}/bin/python-config" \
+    "${MINGW_PREFIX}/bin/waf" \
+      --prefix="${MINGW_PREFIX}" --python="${MINGW_PREFIX}/bin/python.exe" \
+      --check-cxx-compiler=${CXX} --check-c-compiler=${CC} --color=yes --jobs=${_jobs#-j} \
+      --wx_config=wx-config-${_wx_basever} \
+      --no_magic --nopyc --nopyo --nopycache \
+        configure build
+}
+
+package() {
+  cd ${srcdir}/${_sourcedir}
+  MSYS2_ARG_CONV_EXCL="--prefix=;--install-scripts=;--install-platlib=" \
+    "${MINGW_PREFIX}/bin/python" setup.py install \
+      --prefix="${MINGW_PREFIX}" --root="${pkgdir}" --skip-build
+
+  # remove shebang line
+  for _f in "${pkgdir}${MINGW_PREFIX}"/bin/*-script.py; do
+    sed -e '1 { s/^#!.*$// }' -i ${_f}
+  done
+
+  install -vDm 644 LICENSE.txt "${pkgdir}${MINGW_PREFIX}/share/licenses/$_realname/LICENSE.txt"
+}
