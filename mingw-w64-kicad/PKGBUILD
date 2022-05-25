@@ -1,0 +1,164 @@
+# Maintainer: Alexey Pavlov <alexpux@gmail.com>
+# Contributor: Tim Stahlhut <stahta01@gmail.com>
+
+# After building and uploading with pkgrel=1 setting to no is suggested;
+# This results in only the core KiCAD package being built and reduces
+# the build time and band width usage because the support libraries
+# do not change very often and are very large.
+_build_support_libraries=yes
+# meta wants to download the other packages which waste time during
+# development; but, needs to be yes after development is over.
+_build_meta=yes
+
+_realname=kicad
+_wx_basever=3.1
+pkgbase=mingw-w64-${_realname}
+pkgname=(
+  "${MINGW_PACKAGE_PREFIX}-${_realname}"
+  $([[ "$_build_meta" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-${_realname}-meta")
+  $([[ "$_build_support_libraries" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-${_realname}-footprints")
+  $([[ "$_build_support_libraries" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-${_realname}-symbols")
+  $([[ "$_build_support_libraries" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-${_realname}-templates")
+  $([[ "$_build_support_libraries" == "yes" ]] && echo "${MINGW_PACKAGE_PREFIX}-${_realname}-packages3D")
+)
+pkgver=6.0.4
+pkgrel=1
+pkgdesc="Software for the creation of electronic schematic diagrams and printed circuit board artwork (mingw-w64)"
+arch=(any)
+mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64')
+url="https://www.kicad.org/"
+license=("GPLv3+")
+groups=("${MINGW_PACKAGE_PREFIX}-eda")
+depends=(
+  "${MINGW_PACKAGE_PREFIX}-boost"
+  "${MINGW_PACKAGE_PREFIX}-curl"
+  "${MINGW_PACKAGE_PREFIX}-glew"
+  "${MINGW_PACKAGE_PREFIX}-glm"
+  "${MINGW_PACKAGE_PREFIX}-ngspice"
+  "${MINGW_PACKAGE_PREFIX}-python"
+  "${MINGW_PACKAGE_PREFIX}-wxmsw${_wx_basever}"
+  "${MINGW_PACKAGE_PREFIX}-openssl"
+  "${MINGW_PACKAGE_PREFIX}-freeglut"
+  "${MINGW_PACKAGE_PREFIX}-zlib"
+  $([[ ${MINGW_PACKAGE_PREFIX} != *-clang-* ]] && echo "${MINGW_PACKAGE_PREFIX}-opencascade")
+  "${MINGW_PACKAGE_PREFIX}-cairo"
+)
+makedepends=(
+  "git"
+  "${MINGW_PACKAGE_PREFIX}-cmake"
+  "${MINGW_PACKAGE_PREFIX}-cc"
+  "${MINGW_PACKAGE_PREFIX}-doxygen"
+  "${MINGW_PACKAGE_PREFIX}-make"
+  "${MINGW_PACKAGE_PREFIX}-pkg-config"
+  "${MINGW_PACKAGE_PREFIX}-swig"
+)
+source=(
+  '002-cmake-fixes-for-MINGW-CLANG.patch'
+  '003-code-fixes-for-GNUC-CLANG.patch'
+  '005-rewrite-kiwin32_rc_for_clang.patch'
+  '006-manifest-remove-win10-11-manifest-support.patch'
+  "${_realname}-${pkgver}.tar.gz"::"https://gitlab.com/kicad/code/kicad/-/archive/${pkgver}/kicad-${pkgver}.tar.gz"
+)
+if [ "$_build_support_libraries" == "yes" ]; then
+  source+=(
+    "${_realname}-footprints-${pkgver}.tar.gz"::"https://gitlab.com/kicad/libraries/kicad-footprints/-/archive/${pkgver}/kicad-footprints-${pkgver}.tar.gz"
+    "${_realname}-symbols-${pkgver}.tar.gz"::"https://gitlab.com/kicad/libraries/kicad-symbols/-/archive/${pkgver}/kicad-symbols-${pkgver}.tar.gz"
+    "${_realname}-templates-${pkgver}.tar.gz"::"https://gitlab.com/kicad/libraries/kicad-templates/-/archive/${pkgver}/kicad-templates-${pkgver}.tar.gz"
+    "${_realname}-packages3D-${pkgver}.tar.gz"::"https://gitlab.com/kicad/libraries/kicad-packages3D/-/archive/${pkgver}/kicad-packages3D-${pkgver}.tar.gz"
+  )
+fi
+sha256sums=('45c672d20ae9badb9591f39cffc0191d6eb9a86ebbef53d43475954ffb89fe27'
+            'd8d5f4bdd0aa6d8a907710c523f6f95840636cb2ef69e5275c6ed4966f134353'
+            'e03dbb58409145c8fb54991d8259f14bc0ba6b21abca24f9b914ec354c9df89c'
+            '550397b8d2ba66b924933020e409e868d3e4b2352a235f329798bc631b9fd28f'
+            '45d351be84b582821d8a9a590bab5ccd53f9c477950c97295634f209772d5c33')
+if [ "$_build_support_libraries" == "yes" ]; then
+  sha256sums+=(
+            'eedda2c022fb5eae901e7327b16b85bbb59c92e20c578ae10eb09f369df68b00'
+            '42456317d596dca4cb000c1dfbf9b94c312ac4bc4190f3d477439268d5eadba7'
+            '266a51113bc347a4e727b1d0e58e32828409a88950ec95d82ff10a95d321a1f6'
+            '302de19467e07cfb0d93c73dcc2d8cc1ab4840647736b2699a65b5368c7f543c')
+fi
+_doc=("ca" "de" "en" "es" "fr" "id" "it" "ja" "nl" "pl" "ru" "zh")
+_sub=("footprints" "symbols" "templates" "packages3D")
+
+prepare() {
+  cd ${_realname}-${pkgver}
+
+  patch -p1 -i "${srcdir}"/002-cmake-fixes-for-MINGW-CLANG.patch
+  patch -p1 -i "${srcdir}"/003-code-fixes-for-GNUC-CLANG.patch
+  patch -p1 -i "${srcdir}"/005-rewrite-kiwin32_rc_for_clang.patch
+  patch -p1 -i "${srcdir}"/006-manifest-remove-win10-11-manifest-support.patch
+}
+
+build() {
+  cd "${srcdir}"
+  msg2 "Build kicad"
+  [[ -d build-${MSYSTEM} ]] && rm -rf build-${MSYSTEM}
+  mkdir -p build-${MSYSTEM} && cd build-${MSYSTEM}
+
+  MSYS2_ARG_CONV_EXCL="-DCMAKE_INSTALL_PREFIX=;DCMAKE_PREFIX_PATH=;DEFAULT_INSTALL_PATH=" \
+  cmake.exe \
+    -G "MinGW Makefiles" \
+    -DCMAKE_PREFIX_PATH=${MINGW_PREFIX} \
+    -DCMAKE_INSTALL_PREFIX=${MINGW_PREFIX} \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DDEFAULT_INSTALL_PATH=${MINGW_PREFIX} \
+    -DwxWidgets_CONFIG_EXECUTABLE=${MINGW_PREFIX}/bin/wx-config-${_wx_basever} \
+    -DKICAD_USE_OCC="$( [[ ${MINGW_PACKAGE_PREFIX} == *-clang-* ]] && echo "OFF" || echo "ON" )" \
+    -DOCC_INCLUDE_DIR=${MINGW_PREFIX}/include/opencascade \
+    -DKICAD_SCRIPTING_WXPYTHON=OFF \
+    -DKICAD_BUILD_I18N=ON \
+    -DPYTHON_EXECUTABLE=${MINGW_PREFIX}/bin/python.exe \
+    -DPYTHON_INCLUDE_DIR=$(${MINGW_PREFIX}/bin/python.exe -c "from sysconfig import get_paths as gp; print(gp()[\"include\"])") \
+    -DPYTHON_ROOT_DIR=${MINGW_PREFIX} \
+    ../${_realname}-${pkgver}
+
+  mingw32-make VERBOSE=1
+
+  if [ "$_build_support_libraries" == "yes" ]; then
+    for _s in ${_sub[@]}; do
+      cd ${srcdir}
+      msg2 "Build ${_s}"
+      [[ -d build-${_s} ]] && rm -rf build-${_s}
+      mkdir -p build-${_s} && cd build-${_s}
+
+      MSYS2_ARG_CONV_EXCL="-DCMAKE_INSTALL_PREFIX=" \
+      cmake.exe \
+        -G "MinGW Makefiles" \
+        -DCMAKE_INSTALL_PREFIX=${MINGW_PREFIX} \
+      ../${_realname}-${_s}-${pkgver}
+    done
+  fi
+}
+
+for _doclang in ${_doc[@]}; do _doc_pkg+=("\"${MINGW_PACKAGE_PREFIX}-${_realname}-doc-${_doclang}: Documentation for KiCad (mingw-w64)\""); done
+for _feature in ${_sub[@]}; do _sub_pkg+=("\"${MINGW_PACKAGE_PREFIX}-${_realname}-${_feature}\""); done
+
+eval "package_${MINGW_PACKAGE_PREFIX}-${_realname}() {
+
+  msg2 \"Package kicad\"
+  optdepends+=(${_doc_pkg[@]} ${_sub_pkg[@]})
+  conflicts=(${MINGW_PACKAGE_PREFIX}-${_realname}-git)
+  replaces=(${MINGW_PACKAGE_PREFIX}-${_realname}-git)
+
+  cd \${srcdir}/build-${MSYSTEM}
+  mingw32-make DESTDIR=\${pkgdir} install
+}"
+
+eval "package_${MINGW_PACKAGE_PREFIX}-${_realname}-meta() {
+  depends=(${MINGW_PACKAGE_PREFIX}-${_realname}
+           ${_sub_pkg[@]})
+}"
+
+for _part in ${_sub[@]}; do
+  eval "package_${MINGW_PACKAGE_PREFIX}-${_realname}-${_part}() {
+    options=('!strip')
+    depends=(${MINGW_PACKAGE_PREFIX}-${_realname})
+    conflicts=(${MINGW_PACKAGE_PREFIX}-${_realname}-${_part}-git)
+    replaces=(${MINGW_PACKAGE_PREFIX}-${_realname}-${_part}-git)
+    msg2 \"Package ${_part}\"
+    cd \${srcdir}/build-${_part}
+    mingw32-make DESTDIR=\${pkgdir} install
+  }"
+done
