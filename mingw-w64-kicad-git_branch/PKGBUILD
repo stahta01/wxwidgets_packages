@@ -38,8 +38,8 @@ depends=(
 )
 makedepends=(
   'git'
-  'make'
   "${MINGW_PACKAGE_PREFIX}-cmake"
+  "${MINGW_PACKAGE_PREFIX}-ninja"
   "${MINGW_PACKAGE_PREFIX}-cc"
   "${MINGW_PACKAGE_PREFIX}-doxygen"
   "${MINGW_PACKAGE_PREFIX}-pkg-config"
@@ -99,7 +99,7 @@ build() {
 
   MSYS2_ARG_CONV_EXCL="-DCMAKE_INSTALL_PREFIX=;DCMAKE_PREFIX_PATH=;DEFAULT_INSTALL_PATH=" \
   ${MINGW_PREFIX}/bin/cmake.exe \
-    -G "MSYS Makefiles" \
+    -GNinja \
     -DCMAKE_PREFIX_PATH=${MINGW_PREFIX} \
     -DCMAKE_INSTALL_PREFIX=${MINGW_PREFIX} \
     "${extra_config[@]}" \
@@ -113,7 +113,7 @@ build() {
     -DKICAD_BUILD_I18N=ON \
     ../${_sourcedir}
 
-  make VERBOSE=1
+  ${MINGW_PREFIX}/bin/cmake --build . || ${MINGW_PREFIX}/bin/cmake --build . --parallel 1
 }
 
 for _doclang in ${_doc[@]}; do _doc_pkg+=("\"${MINGW_PACKAGE_PREFIX}-${_realname}-doc-${_doclang}: Documentation for KiCad (mingw-w64)\""); done
@@ -127,5 +127,5 @@ eval "package_${MINGW_PACKAGE_PREFIX}-${_realname}-git() {
   provides=(${MINGW_PACKAGE_PREFIX}-${_realname})
 
   cd \${srcdir}/build-${MSYSTEM}
-  make VERBOSE=1 DESTDIR=\${pkgdir} install
+  DESTDIR=\${pkgdir} \${MINGW_PREFIX}/bin/cmake --install .
 }"
