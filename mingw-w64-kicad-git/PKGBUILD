@@ -7,7 +7,7 @@ _wx_basever=3.1
 _sourcedir=${_realname}-git
 pkgbase=mingw-w64-${_realname}-git_branch
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}-git")
-pkgver=6.99.0.r1993.g2a9d7314ca
+pkgver=6.99.0.r2014.gd5d8d36d86
 pkgrel=1
 pkgdesc="Software for the creation of electronic schematic diagrams and printed circuit board artwork (mingw-w64)"
 arch=(any)
@@ -33,7 +33,7 @@ depends=(
   "${MINGW_PACKAGE_PREFIX}-openssl"
   "${MINGW_PACKAGE_PREFIX}-freeglut"
   "${MINGW_PACKAGE_PREFIX}-zlib"
-  $([[ ${MINGW_PACKAGE_PREFIX} != *-clang-* ]] && echo "${MINGW_PACKAGE_PREFIX}-opencascade")
+  $([[ ${MINGW_PACKAGE_PREFIX} != *-clang-aarch64* ]] && echo "${MINGW_PACKAGE_PREFIX}-opencascade")
   "${MINGW_PACKAGE_PREFIX}-cairo"
 )
 makedepends=(
@@ -94,7 +94,7 @@ build() {
     extra_config+=( -DCMAKE_BUILD_TYPE=Release )
   fi
 
-  if [[ ${MINGW_PACKAGE_PREFIX} != *-clang-* ]]; then
+  if [[ ${MINGW_PACKAGE_PREFIX} != *-clang-aarch64* ]]; then
     extra_config+=( -DOCC_INCLUDE_DIR=${MINGW_PREFIX}/include/opencascade )
   fi
 
@@ -108,7 +108,7 @@ build() {
     "${extra_config[@]}" \
     -DDEFAULT_INSTALL_PATH=${MINGW_PREFIX} \
     -DwxWidgets_CONFIG_EXECUTABLE=${MINGW_PREFIX}/bin/wx-config-${_wx_basever} \
-    -DKICAD_USE_OCC="$( [[ ${MINGW_PACKAGE_PREFIX} == *-clang-* ]] && echo "OFF" || echo "ON" )" \
+    -DKICAD_USE_OCC="$( [[ ${MINGW_PACKAGE_PREFIX} == *-clang-aarch64* ]] && echo "OFF" || echo "ON" )" \
     -DKICAD_SCRIPTING_WXPYTHON=OFF \
     -DKICAD_BUILD_QA_TESTS=OFF \
     -DPYTHON_EXECUTABLE=${MINGW_PREFIX}/bin/python.exe \
