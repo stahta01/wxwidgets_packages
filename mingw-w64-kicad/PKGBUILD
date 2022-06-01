@@ -70,6 +70,8 @@ prepare() {
   patch -p1 -i "${srcdir}"/003-code-fixes-for-GNUC-CLANG.patch
   patch -p1 -i "${srcdir}"/005-rewrite-kiwin32_rc_for_clang.patch
   patch -p1 -i "${srcdir}"/006-manifest-remove-win10-11-manifest-support.patch
+
+  sed -s "s|set(CMAKE_CXX_EXTENSIONS OFF)|set(CMAKE_CXX_EXTENSIONS ON)|g" -i CMakeLists.txt
 }
 
 build() {
@@ -111,7 +113,7 @@ build() {
     -DPYTHON_ROOT_DIR=${MINGW_PREFIX} \
     ../${_realname}-${pkgver}
 
-  make VERBOSE=1
+  make VERBOSE=1 || make VERBOSE=1 --jobs=1
 }
 
 for _doclang in ${_doc[@]}; do _doc_pkg+=("\"${MINGW_PACKAGE_PREFIX}-${_realname}-doc-${_doclang}: Documentation for KiCad (mingw-w64)\""); done
