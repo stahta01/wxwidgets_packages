@@ -20,6 +20,12 @@ mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64')
 url="https://www.kicad.org/"
 license=("GPLv3+")
 groups=("${MINGW_PACKAGE_PREFIX}-eda")
+options=('!strip')
+#if [[ "${MSYSTEM}" == "UCRT64" ]]; then
+  #options+=('debug')
+#else
+  options+=('!debug')
+#fi
 depends=(
   "${MINGW_PACKAGE_PREFIX}-boost"
   "${MINGW_PACKAGE_PREFIX}-curl"
@@ -35,11 +41,10 @@ depends=(
   "${MINGW_PACKAGE_PREFIX}-cairo"
 )
 makedepends=(
-  "git"
+  'git' 'make'
   "${MINGW_PACKAGE_PREFIX}-cmake"
   "${MINGW_PACKAGE_PREFIX}-cc"
   "${MINGW_PACKAGE_PREFIX}-doxygen"
-  "${MINGW_PACKAGE_PREFIX}-make"
   "${MINGW_PACKAGE_PREFIX}-pkg-config"
   "${MINGW_PACKAGE_PREFIX}-swig"
 )
@@ -73,16 +78,32 @@ build() {
   [[ -d build-${MSYSTEM} ]] && rm -rf build-${MSYSTEM}
   mkdir -p build-${MSYSTEM} && cd build-${MSYSTEM}
 
+  local -a extra_config
+  if check_option "debug" "y"; then
+    extra_config+=( -DCMAKE_BUILD_TYPE=Debug )
+  else
+    extra_config+=( -DCMAKE_BUILD_TYPE=Release )
+  fi
+
+  if [[ ${MINGW_PACKAGE_PREFIX} != *-clang-aarch64* ]]; then
+    extra_config+=( -DOCC_INCLUDE_DIR=${MINGW_PREFIX}/include/opencascade )
+  fi
+
+  if [[ ${MINGW_PACKAGE_PREFIX} != *-clang-* ]]; then
+    export CXXFLAGS="-pipe"
+    extra_config+=( -DCMAKE_CXX_FLAGS_RELEASE:STRING="-O0 -DNDEBUG" )
+  fi
+
   MSYS2_ARG_CONV_EXCL="-DCMAKE_INSTALL_PREFIX=;DCMAKE_PREFIX_PATH=;DEFAULT_INSTALL_PATH=" \
-  cmake.exe \
-    -G "MinGW Makefiles" \
+  ${MINGW_PREFIX}/bin/cmake.exe \
+    -G "MSYS Makefiles" \
     -DCMAKE_PREFIX_PATH=${MINGW_PREFIX} \
     -DCMAKE_INSTALL_PREFIX=${MINGW_PREFIX} \
+    "${extra_config[@]}" \
     -DCMAKE_BUILD_TYPE=Release \
     -DDEFAULT_INSTALL_PATH=${MINGW_PREFIX} \
     -DwxWidgets_CONFIG_EXECUTABLE=${MINGW_PREFIX}/bin/wx-config-${_wx_basever} \
     -DKICAD_USE_OCC="$( [[ ${MINGW_PACKAGE_PREFIX} == *-clang-* ]] && echo "OFF" || echo "ON" )" \
-    -DOCC_INCLUDE_DIR=${MINGW_PREFIX}/include/opencascade \
     -DKICAD_SCRIPTING_WXPYTHON=OFF \
     -DKICAD_BUILD_I18N=ON \
     -DPYTHON_EXECUTABLE=${MINGW_PREFIX}/bin/python.exe \
@@ -90,7 +111,7 @@ build() {
     -DPYTHON_ROOT_DIR=${MINGW_PREFIX} \
     ../${_realname}-${pkgver}
 
-  mingw32-make VERBOSE=1
+  make VERBOSE=1
 }
 
 for _doclang in ${_doc[@]}; do _doc_pkg+=("\"${MINGW_PACKAGE_PREFIX}-${_realname}-doc-${_doclang}: Documentation for KiCad (mingw-w64)\""); done
@@ -104,7 +125,7 @@ eval "package_${MINGW_PACKAGE_PREFIX}-${_realname}() {
   replaces=(${MINGW_PACKAGE_PREFIX}-${_realname}-git)
 
   cd \${srcdir}/build-${MSYSTEM}
-  mingw32-make DESTDIR=\${pkgdir} install
+  make DESTDIR=\${pkgdir} install
 }"
 
 eval "package_${MINGW_PACKAGE_PREFIX}-${_realname}-meta() {
