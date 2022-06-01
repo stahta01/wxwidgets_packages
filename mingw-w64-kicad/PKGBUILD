@@ -3,7 +3,7 @@
 
 # meta wants to download the other packages which waste time during
 # development; but, needs to be yes after development is over.
-_build_meta=yes
+_build_meta=no
 
 _realname=kicad
 _wx_basever=3.1
