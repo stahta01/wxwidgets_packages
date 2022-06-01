@@ -71,7 +71,7 @@ prepare() {
   patch -p1 -i "${srcdir}"/005-rewrite-kiwin32_rc_for_clang.patch
   patch -p1 -i "${srcdir}"/006-manifest-remove-win10-11-manifest-support.patch
 
-  sed -s "s|set(CMAKE_CXX_EXTENSIONS OFF)|set(CMAKE_CXX_EXTENSIONS ON)|g" -i CMakeLists.txt
+#  sed -s "s|set(CMAKE_CXX_EXTENSIONS OFF)|set(CMAKE_CXX_EXTENSIONS ON)|g" -i CMakeLists.txt
 }
 
 build() {
