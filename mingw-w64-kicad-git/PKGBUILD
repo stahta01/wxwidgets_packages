@@ -1,7 +1,9 @@
 # Maintainer: Tim Stahlhut <stahta01@gmail.com>
 
 _realname=kicad
- _git_commit=55679be2e319e8a315163b51038a17f407890107 # 5.99.0.r10138
+#_git_commit=25665473772ad6cd72c7b459c162221c83f6796e # 5.99.0.r9139  Does not have GCC 12.1 silent error bug
+ _git_commit=d802b4a7afde9e24691609ee08380fe63c18d334 #
+#_git_commit=55679be2e319e8a315163b51038a17f407890107 # 5.99.0.r10138 Has GCC 12.1 silent error bug
 #_git_commit=eac2700af6ec9a2aefcd4b4bbe5d8db35f161b42 # 5.99.0.r10361 Has GCC 12.1 silent error bug
 #_git_commit=b5b76eedf767fdd6520cd9ab3bf0bd99d18b1a65 # 5.99.0.r10784 Has GCC 12.1 silent error bug
 #_git_commit=769ca2d255620a101e31b953dde7340744061503 # 5.99.0.r12294 Has GCC 12.1 silent error bug
@@ -12,7 +14,7 @@ _wx_basever=3.1
 _sourcedir=${_realname}-git
 pkgbase=mingw-w64-${_realname}-git
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}-git")
-pkgver=5.99.0.r10138.g55679be2e3
+pkgver=5.99.0.r9139.g2566547377
 pkgrel=1
 pkgdesc="Software for the creation of electronic schematic diagrams and printed circuit board artwork (mingw-w64)"
 arch=(any)
