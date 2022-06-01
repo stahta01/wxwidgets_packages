@@ -111,15 +111,3 @@ eval "package_${MINGW_PACKAGE_PREFIX}-${_realname}-meta() {
   depends=(${MINGW_PACKAGE_PREFIX}-${_realname}
            ${_sub_pkg[@]})
 }"
-
-for _part in ${_sub[@]}; do
-  eval "package_${MINGW_PACKAGE_PREFIX}-${_realname}-${_part}() {
-    options=('!strip')
-    depends=(${MINGW_PACKAGE_PREFIX}-${_realname})
-    conflicts=(${MINGW_PACKAGE_PREFIX}-${_realname}-${_part}-git)
-    replaces=(${MINGW_PACKAGE_PREFIX}-${_realname}-${_part}-git)
-    msg2 \"Package ${_part}\"
-    cd \${srcdir}/build-${_part}
-    mingw32-make DESTDIR=\${pkgdir} install
-  }"
-done
