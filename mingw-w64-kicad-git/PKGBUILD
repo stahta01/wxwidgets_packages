@@ -7,7 +7,7 @@ _wx_basever=3.1
 _sourcedir=${_realname}-git
 pkgbase=mingw-w64-${_realname}-git
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}-git")
-pkgver=6.99.0.r2017.gabba1b04bd
+pkgver=6.99.0.r2039.gdee22a31d9
 pkgrel=1
 pkgdesc="Software for the creation of electronic schematic diagrams and printed circuit board artwork (mingw-w64)"
 arch=(any)
@@ -107,7 +107,7 @@ build() {
 
   MSYS2_ARG_CONV_EXCL="-DCMAKE_INSTALL_PREFIX=;DCMAKE_PREFIX_PATH=;DEFAULT_INSTALL_PATH=" \
   ${MINGW_PREFIX}/bin/cmake.exe \
-    -GNinja \
+    -G "MSYS Makefiles" \
     -DCMAKE_PREFIX_PATH=${MINGW_PREFIX} \
     -DCMAKE_INSTALL_PREFIX=${MINGW_PREFIX} \
     "${extra_config[@]}" \
@@ -122,7 +122,7 @@ build() {
     -DKICAD_BUILD_I18N=OFF \
     ../${_sourcedir}
 
-  ${MINGW_PREFIX}/bin/cmake --build . || ${MINGW_PREFIX}/bin/cmake --build . --parallel 1
+  make VERBOSE=1 || make VERBOSE=1 --jobs=1
 }
 
 for _doclang in ${_doc[@]}; do _doc_pkg+=("\"${MINGW_PACKAGE_PREFIX}-${_realname}-doc-${_doclang}: Documentation for KiCad (mingw-w64)\""); done
@@ -136,5 +136,5 @@ eval "package_${MINGW_PACKAGE_PREFIX}-${_realname}-git() {
   provides=(${MINGW_PACKAGE_PREFIX}-${_realname})
 
   cd \${srcdir}/build-${MSYSTEM}
-  DESTDIR=\${pkgdir} \${MINGW_PREFIX}/bin/cmake --install .
+  make DESTDIR=\${pkgdir} install
 }"
