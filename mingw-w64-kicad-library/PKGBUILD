@@ -1,0 +1,63 @@
+# Maintainer:  Alexey Pavlov <alexpux@gmail.com>
+# Maintainer:  Tim Stahlhut <stahta01@gmail.com>
+
+_realname=kicad
+pkgbase=mingw-w64-${_realname}-library
+pkgname=(
+  "${MINGW_PACKAGE_PREFIX}-${_realname}-footprints"
+  "${MINGW_PACKAGE_PREFIX}-${_realname}-symbols"
+  "${MINGW_PACKAGE_PREFIX}-${_realname}-templates"
+  "${MINGW_PACKAGE_PREFIX}-${_realname}-packages3D"
+)
+pkgver=6.0.4
+pkgrel=1
+pkgdesc="Software for the creation of electronic schematic diagrams and printed circuit board artwork (mingw-w64)"
+arch=(any)
+mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clang32')
+url="https://www.kicad.org/"
+license=("GPLv3+")
+groups=("${MINGW_PACKAGE_PREFIX}-eda")
+depends=()
+makedepends=("${MINGW_PACKAGE_PREFIX}-cmake"
+             "${MINGW_PACKAGE_PREFIX}-ninja")
+source=("${_realname}-footprints-${pkgver}.tar.gz"::"https://gitlab.com/kicad/libraries/kicad-footprints/-/archive/${pkgver}/kicad-footprints-${pkgver}.tar.gz"
+        "${_realname}-symbols-${pkgver}.tar.gz"::"https://gitlab.com/kicad/libraries/kicad-symbols/-/archive/${pkgver}/kicad-symbols-${pkgver}.tar.gz"
+        "${_realname}-templates-${pkgver}.tar.gz"::"https://gitlab.com/kicad/libraries/kicad-templates/-/archive/${pkgver}/kicad-templates-${pkgver}.tar.gz"
+        "${_realname}-packages3D-${pkgver}.tar.gz"::"https://gitlab.com/kicad/libraries/kicad-packages3D/-/archive/${pkgver}/kicad-packages3D-${pkgver}.tar.gz")
+sha256sums=('eedda2c022fb5eae901e7327b16b85bbb59c92e20c578ae10eb09f369df68b00'
+            '42456317d596dca4cb000c1dfbf9b94c312ac4bc4190f3d477439268d5eadba7'
+            '266a51113bc347a4e727b1d0e58e32828409a88950ec95d82ff10a95d321a1f6'
+            '302de19467e07cfb0d93c73dcc2d8cc1ab4840647736b2699a65b5368c7f543c')
+
+_sub=("footprints" "symbols" "templates" "packages3D")
+
+build() {
+  cd "${srcdir}"
+
+  for _s in ${_sub[@]}; do
+    cd ${srcdir}
+    msg2 "Build ${_s}"
+    [[ -d build-${_s} ]] && rm -rf build-${_s}
+    mkdir -p build-${_s} && cd build-${_s}
+
+    MSYS2_ARG_CONV_EXCL="-DCMAKE_INSTALL_PREFIX=" \
+    cmake \
+      -GNinja \
+      -DCMAKE_INSTALL_PREFIX=${MINGW_PREFIX} \
+      ../${_realname}-${_s}-${pkgver}
+  done
+}
+
+for _feature in ${_sub[@]}; do _sub_pkg+=("\"${MINGW_PACKAGE_PREFIX}-${_realname}-${_feature}\""); done
+
+for _part in ${_sub[@]}; do
+  eval "package_${MINGW_PACKAGE_PREFIX}-${_realname}-${_part}() {
+    options=('!strip')
+    optdepends=(${MINGW_PACKAGE_PREFIX}-${_realname})
+    conflicts=(${MINGW_PACKAGE_PREFIX}-${_realname}-${_part}-git)
+    replaces=(${MINGW_PACKAGE_PREFIX}-${_realname}-${_part}-git)
+    msg2 \"Package ${_part}\"
+    cd \${srcdir}/build-${_part}
+    DESTDIR=\${pkgdir} \${MINGW_PREFIX}/bin/cmake --install .
+  }"
+done
