@@ -128,7 +128,9 @@ eval "package_${MINGW_PACKAGE_PREFIX}-${_realname}() {
   make DESTDIR=\${pkgdir} install
 }"
 
+if [[ "$_build_meta" == "yes" ]]; then
 eval "package_${MINGW_PACKAGE_PREFIX}-${_realname}-meta() {
   depends=(${MINGW_PACKAGE_PREFIX}-${_realname}
            ${_sub_pkg[@]})
 }"
+fi
