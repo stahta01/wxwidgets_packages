@@ -1,7 +1,7 @@
 # Maintainer: Tim Stahlhut <stahta01@gmail.com>
 
 _realname=kicad
-#_git_commit=4db10d419dd3bfd09f055fc52cd965fb7204e97e # 5.99.0.r9716 Does not have GCC 12.1 silent error bug
+#_git_commit=4db10d419dd3bfd09f055fc52cd965fb7204e97e # 5.99.0.r9716  Does not have GCC 12.1 silent error bug
 #_git_commit=18037e2f65dbdca73dbe3e5d375fa5f86bd33f20 # 5.99.0.r9717  Has GCC 12.1 silent error bug
 #_git_commit=222c4ce7df2433650b62a8cd7ac168b2b233f685 # 5.99.0.r12634 Has GCC 12.1 silent error bug
 #_git_commit=cd8e464339bca217247e51fafc1d6aa3c79260cc # 5.99.0.r12833 fails to set default ucrt64 config
@@ -10,7 +10,7 @@ _wx_basever=3.1
 _sourcedir=${_realname}-git
 pkgbase=mingw-w64-${_realname}-git
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}-git")
-pkgver=6.99.0.r2042.gde12c63de6
+pkgver=6.99.0.r2043.gbd51b33f65
 pkgrel=1
 pkgdesc="Software for the creation of electronic schematic diagrams and printed circuit board artwork (mingw-w64)"
 arch=(any)
@@ -40,7 +40,7 @@ depends=(
   "${MINGW_PACKAGE_PREFIX}-cairo"
 )
 makedepends=(
-  'git' 'make'
+  'git' 'make' 'patch'
   "${MINGW_PACKAGE_PREFIX}-cmake"
   "${MINGW_PACKAGE_PREFIX}-cc"
   "${MINGW_PACKAGE_PREFIX}-doxygen"
@@ -54,6 +54,8 @@ source=(
   '006-ki-6.0-manifest-remove-win10-11-manifest-support.patch'
   '007-ki-6.0-Remove_UTF-8_CodePage_from_manifests.patch'
   '008-ki-5.99-Add-missing-header-that-broke-msvc-builds.patch'
+  '009-ki-6.0-gcc-bugfix-try-1.patch'
+  '010-ki-6.0-comment-out-code-try-1.patch'
 #  "${_sourcedir}"::"git+https://github.com/KiCad/kicad-source-mirror.git#commit=${_git_commit}"
   "${_sourcedir}"::"git+https://github.com/KiCad/kicad-source-mirror.git"
 )
@@ -63,6 +65,8 @@ sha256sums=('ac419b1ce1d512b2003211a936f1f2172d5d988f5db7d061169f22d20d95a5b7'
             '550397b8d2ba66b924933020e409e868d3e4b2352a235f329798bc631b9fd28f'
             'b32a7a0734e1d47ada234130d7b9a4ccc06f62e765bf519a4b00efa8f59c48bc'
             '833e6bdb19545c2943c3045c6854527a35ab7a5be80bdca6184c153d6b6a22ed'
+            '4e9ec2f24dbe5a8020dcc56a7dac004fe0db9090eaaa985293d165e3a33d69aa'
+            '00d735add20ff9de9f20eb02aeec23a0ff45a8abe39969654d4a2a8fa49c030b'
             'SKIP')
 _doc=("ca" "de" "en" "es" "fr" "id" "it" "ja" "nl" "pl" "ru" "zh")
 _sub=("footprints" "symbols" "templates" "packages3D")
@@ -85,6 +89,8 @@ prepare() {
 #  patch -p1 -i "${srcdir}"/006-manifest-remove-win10-11-manifest-support.patch
 #  patch -p1 -i "${srcdir}"/007-Remove_UTF-8_CodePage_from_manifests.patch
 #  patch -Np1 -i "${srcdir}"/008-ki-5.99-Add-missing-header-that-broke-msvc-builds.patch
+   patch -Np1 -i "${srcdir}"/010-ki-6.0-comment-out-code-try-1.patch
+   patch -Np1 -i "${srcdir}"/009-ki-6.0-gcc-bugfix-try-1.patch
 }
 
 build() {

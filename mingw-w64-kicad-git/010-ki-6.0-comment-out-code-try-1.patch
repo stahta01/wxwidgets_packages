@@ -1,0 +1,95 @@
+From 95fc38e6bd0ef5236277de08999530cbfa44d5ad Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Thu, 2 Jun 2022 13:50:15 -0400
+Subject: comment out code try 1
+
+---
+ common/bitmap.cpp | 56 +----------------------------------------------
+ 1 file changed, 1 insertion(+), 55 deletions(-)
+
+diff --git a/common/bitmap.cpp b/common/bitmap.cpp
+index 895f0ca44c..843075a674 100644
+--- a/common/bitmap.cpp
++++ b/common/bitmap.cpp
+@@ -172,27 +169,12 @@ wxBitmap KiScaledBitmap( BITMAPS aBitmap, wxWindow* aWindow, int aHeight, bool a
+ 
+ void ClearScaledBitmapCache()
+ {
+-    std::lock_guard<std::mutex> guard( s_BitmapCacheMutex );
+-    s_ScaledBitmapCache.clear();
+ }
+ 
+ 
+ wxBitmap KiScaledBitmap( const wxBitmap& aBitmap, wxWindow* aWindow )
+ {
+-    const int scale = get_scale_factor( aWindow );
+-
+-    if( scale == 4 )
+-    {
+         return wxBitmap( aBitmap );
+-    }
+-    else
+-    {
+-        wxImage image = aBitmap.ConvertToImage();
+-        image.Rescale( scale * image.GetWidth() / 4, scale * image.GetHeight() / 4,
+-            wxIMAGE_QUALITY_BILINEAR );
+-
+-        return wxBitmap( image );
+-    }
+ }
+ 
+ 
+@@ -207,50 +189,14 @@ wxBitmap* KiBitmapNew( BITMAPS aBitmap )
+ bool SaveCanvasImageToFile( EDA_DRAW_FRAME* aFrame, const wxString& aFileName,
+                             BITMAP_TYPE aBitmapType )
+ {
+-    wxCHECK( aFrame != nullptr, false );
+-
+     bool       retv = true;
+ 
+-    // Make a screen copy of the canvas:
+-    wxSize image_size = aFrame->GetCanvas()->GetClientSize();
+-
+-    wxClientDC dc( aFrame->GetCanvas() );
+-    wxBitmap   bitmap( image_size.x, image_size.y );
+-    wxMemoryDC memdc;
+-
+-    memdc.SelectObject( bitmap );
+-    memdc.Blit( 0, 0, image_size.x, image_size.y, &dc, 0, 0 );
+-    memdc.SelectObject( wxNullBitmap );
+-
+-    wxImage image = bitmap.ConvertToImage();
+-
+-    wxBitmapType type = wxBITMAP_TYPE_PNG;
+-    switch( aBitmapType )
+-    {
+-    case BITMAP_TYPE::PNG: type = wxBITMAP_TYPE_PNG; break;
+-    case BITMAP_TYPE::BMP: type = wxBITMAP_TYPE_BMP; break;
+-    case BITMAP_TYPE::JPG: type = wxBITMAP_TYPE_JPEG; break;
+-    }
+-
+-    if( !image.SaveFile( aFileName, type ) )
+-        retv = false;
+-
+-    image.Destroy();
+     return retv;
+ }
+ 
+ 
+ void AddBitmapToMenuItem( wxMenuItem* aMenu, const wxBitmap& aImage )
+ {
+-    // Retrieve the global application show icon option:
+-    bool useImagesInMenus = Pgm().GetCommonSettings()->m_Appearance.use_icons_in_menus;
+-
+-    wxItemKind menu_type = aMenu->GetKind();
+-
+-    if( useImagesInMenus && menu_type != wxITEM_CHECK && menu_type != wxITEM_RADIO  )
+-    {
+-        aMenu->SetBitmap( aImage );
+-    }
+ }
+ 
+ 
+-- 
+2.36.1.windows.1
+
