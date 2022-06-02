@@ -1,0 +1,22 @@
+From 917e368db3b2b2fae4f8ad3e5ea805791dddbb86 Mon Sep 17 00:00:00 2001
+From: Marek Roszko <mark.roszko@gmail.com>
+Date: Sat, 20 Mar 2021 10:28:35 -0400
+Subject: Add missing header that broke msvc builds
+
+---
+ libs/kiplatform/msw/app.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/libs/kiplatform/msw/app.cpp b/libs/kiplatform/msw/app.cpp
+index 0073291ffc..c4251a1028 100644
+--- a/libs/kiplatform/msw/app.cpp
++++ b/libs/kiplatform/msw/app.cpp
+@@ -23,6 +23,7 @@
+ #include <wx/log.h>
+ #include <wx/string.h>
+ #include <wx/window.h>
++#include <wx/msgdlg.h>
+ 
+ #include <windows.h>
+ #include <strsafe.h>
+-- 
