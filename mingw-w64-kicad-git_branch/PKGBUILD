@@ -8,7 +8,7 @@ _wx_basever=3.1
 _sourcedir=${_realname}-git
 pkgbase=mingw-w64-${_realname}-git_branch
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}-git")
-pkgver=6.0.5.r109.g2d092437f4
+pkgver=6.0.5.r124.g8d8f96b094
 pkgrel=1
 pkgdesc="Software for the creation of electronic schematic diagrams and printed circuit board artwork (mingw-w64)"
 arch=(any)
@@ -16,11 +16,12 @@ mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clang32')
 url="https://www.kicad.org/"
 license=("GPLv3+")
 groups=("${MINGW_PACKAGE_PREFIX}-eda")
-if [[ "${MSYSTEM}" == "UCRT64" ]]; then
-  options=('debug')
-else
-  options=('!debug')
-fi
+options=('!strip')
+#if [[ "${MSYSTEM}" == "UCRT64" ]]; then
+  #options+=('debug')
+#else
+  options+=('!debug')
+#fi
 depends=(
   "${MINGW_PACKAGE_PREFIX}-boost"
   "${MINGW_PACKAGE_PREFIX}-curl"
@@ -99,7 +100,7 @@ build() {
 
   MSYS2_ARG_CONV_EXCL="-DCMAKE_INSTALL_PREFIX=;DCMAKE_PREFIX_PATH=;DEFAULT_INSTALL_PATH=" \
   ${MINGW_PREFIX}/bin/cmake.exe \
-    -GNinja \
+    -G "MSYS Makefiles" \
     -DCMAKE_PREFIX_PATH=${MINGW_PREFIX} \
     -DCMAKE_INSTALL_PREFIX=${MINGW_PREFIX} \
     "${extra_config[@]}" \
@@ -113,7 +114,7 @@ build() {
     -DKICAD_BUILD_I18N=ON \
     ../${_sourcedir}
 
-  ${MINGW_PREFIX}/bin/cmake --build . || ${MINGW_PREFIX}/bin/cmake --build . --parallel 1
+  make VERBOSE=1 || make VERBOSE=1 --jobs=1
 }
 
 for _doclang in ${_doc[@]}; do _doc_pkg+=("\"${MINGW_PACKAGE_PREFIX}-${_realname}-doc-${_doclang}: Documentation for KiCad (mingw-w64)\""); done
@@ -127,5 +128,5 @@ eval "package_${MINGW_PACKAGE_PREFIX}-${_realname}-git() {
   provides=(${MINGW_PACKAGE_PREFIX}-${_realname})
 
   cd \${srcdir}/build-${MSYSTEM}
-  DESTDIR=\${pkgdir} \${MINGW_PREFIX}/bin/cmake --install .
+  make DESTDIR=\${pkgdir} install.
 }"
