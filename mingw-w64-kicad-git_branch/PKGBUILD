@@ -38,9 +38,8 @@ depends=(
   "${MINGW_PACKAGE_PREFIX}-cairo"
 )
 makedepends=(
-  'git'
+  'git' 'make' 'patch'
   "${MINGW_PACKAGE_PREFIX}-cmake"
-  "${MINGW_PACKAGE_PREFIX}-ninja"
   "${MINGW_PACKAGE_PREFIX}-cc"
   "${MINGW_PACKAGE_PREFIX}-doxygen"
   "${MINGW_PACKAGE_PREFIX}-pkg-config"
