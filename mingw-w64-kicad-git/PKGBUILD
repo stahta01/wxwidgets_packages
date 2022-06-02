@@ -3,8 +3,13 @@
 _realname=kicad
 #_git_commit=25665473772ad6cd72c7b459c162221c83f6796e # 5.99.0.r9139  Does not have GCC 12.1 silent error bug
 #_git_commit=d802b4a7afde9e24691609ee08380fe63c18d334 # 5.99.0.r9639  Does not have GCC 12.1 silent error bug
-#_git_commit=298dda8fcdb04ffb2f923dc0ca8992bf05d75ebf # 5.99.0.r9889  error: 'wxMessageBox' was not declared in this scope;
- _git_commit=917e368db3b2b2fae4f8ad3e5ea805791dddbb86 # 5.99.0.r9891  ??
+#_git_commit=14f00271a46f9288c4e7200c5e70c60655328157 # 5.99.0.r9690  Does not have GCC 12.1 silent error bug
+ _git_commit=18037e2f65dbdca73dbe3e5d375fa5f86bd33f20 # 5.99.0.r9717  ??
+#_git_commit=ba46a8d12de77967e1c4d9d092faca6a45269c3b # 5.99.0.r9741  Has GCC 12.1 silent error bug
+#_git_commit=4e438763a361f5b228dead1f1fbb56559a22932a # 5.99.0.r9790  Has GCC 12.1 silent error bug
+#_git_commit=298dda8fcdb04ffb2f923dc0ca8992bf05d75ebf # 5.99.0.r9889  Has GCC 12.1 silent error bug
+# error: 'wxMessageBox' was not declared in this scope; fixed by 008-ki-5.99-Add-missing-header-that-broke-msvc-builds.patch
+#_git_commit=917e368db3b2b2fae4f8ad3e5ea805791dddbb86 # 5.99.0.r9891  Has GCC 12.1 silent error bug
 #_git_commit=07aea4339d1cd60c8f48a71adcbf588930ffcbc3 # 5.99.0.r9903  Has GCC 12.1 silent error bug
 #_git_commit=4c0b0fc7ec842f3fd494c6dfc4fe5438e2a1fedb # 5.99.0.r9916  Has GCC 12.1 silent error bug
 #_git_commit=f6c4677189be58f71a230e4df6c15892be65b4bb # 5.99.0.r9940  Has GCC 12.1 silent error bug
@@ -17,7 +22,7 @@ _wx_basever=3.1
 _sourcedir=${_realname}-git
 pkgbase=mingw-w64-${_realname}-git
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}-git")
-pkgver=5.99.0.r9891.g917e368db3
+pkgver=5.99.0.r9717.g18037e2f65
 pkgrel=1
 pkgdesc="Software for the creation of electronic schematic diagrams and printed circuit board artwork (mingw-w64)"
 arch=(any)
@@ -91,7 +96,7 @@ prepare() {
 #  patch -p1 -i "${srcdir}"/005-rewrite-kiwin32_rc_for_clang.patch
 #  patch -p1 -i "${srcdir}"/006-manifest-remove-win10-11-manifest-support.patch
 #  patch -p1 -i "${srcdir}"/007-Remove_UTF-8_CodePage_from_manifests.patch
-#  patch -Np1 -i "${srcdir}"/008-ki-5.99-Add-missing-header-that-broke-msvc-builds.patch
+  patch -Np1 -i "${srcdir}"/008-ki-5.99-Add-missing-header-that-broke-msvc-builds.patch
 }
 
 build() {
