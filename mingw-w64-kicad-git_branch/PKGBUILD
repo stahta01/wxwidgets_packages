@@ -46,10 +46,10 @@ makedepends=(
   "${MINGW_PACKAGE_PREFIX}-swig"
 )
 source=(
-  '002-cmake-fixes-for-MINGW-CLANG.patch'
-  '003-code-fixes-for-GNUC-CLANG.patch'
-  '005-rewrite-kiwin32_rc_for_clang.patch'
-  '006-manifest-remove-win10-11-manifest-support.patch'
+  '002-ki-6.0-cmake-fixes-for-MINGW-CLANG.patch'
+  '003-ki-6.0-code-fixes-for-GNUC-CLANG.patch'
+  '005-ki-6.0-rewrite-kiwin32_rc_for_clang.patch'
+  '006-ki-6.0-manifest-remove-win10-11-manifest-support.patch'
   "${_sourcedir}"::"git+https://github.com/KiCad/kicad-source-mirror.git#branch=${_git_branch}"
 #  "${_sourcedir}"::"git+https://github.com/KiCad/kicad-source-mirror.git#tag=${_git_tag}"
 # "${_sourcedir}"::"git+https://github.com/KiCad/kicad-source-mirror.git#commit=${_git_commit}"
@@ -74,10 +74,10 @@ pkgver() {
 prepare() {
   cd ${srcdir}/${_sourcedir}
 
-  patch -p1 -i "${srcdir}"/002-cmake-fixes-for-MINGW-CLANG.patch
-  patch -p1 -i "${srcdir}"/003-code-fixes-for-GNUC-CLANG.patch
-  patch -p1 -i "${srcdir}"/005-rewrite-kiwin32_rc_for_clang.patch
-  patch -p1 -i "${srcdir}"/006-manifest-remove-win10-11-manifest-support.patch
+  patch -p1 -i "${srcdir}"/002-ki-6.0-cmake-fixes-for-MINGW-CLANG.patch
+  patch -p1 -i "${srcdir}"/003-ki-6.0-code-fixes-for-GNUC-CLANG.patch
+  patch -p1 -i "${srcdir}"/005-ki-6.0-rewrite-kiwin32_rc_for_clang.patch
+  patch -p1 -i "${srcdir}"/006-ki-6.0-manifest-remove-win10-11-manifest-support.patch
 }
 
 build() {
