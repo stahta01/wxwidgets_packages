@@ -3,6 +3,8 @@ From: Tim Stahlhut <stahta01@gmail.com>
 Date: Fri, 3 Jun 2022 04:12:07 -0400
 Subject: Convert to using "std::string" in bitmap_info.h
 
+This was needed to avoid a wxString bug triggered by GCC 12.1.0.
+
 ---
  include/bitmaps/bitmap_info.h | 2178 ++++++++++++++++-----------------
  1 file changed, 1089 insertions(+), 1089 deletions(-)
@@ -11,21 +13,6 @@ diff --git a/include/bitmaps/bitmap_info.h b/include/bitmaps/bitmap_info.h
 index 9632042986..dcf22f6bf2 100644
 --- a/include/bitmaps/bitmap_info.h
 +++ b/include/bitmaps/bitmap_info.h
-@@ -2,12 +2,12 @@
- /*
-  * This program source code file is part of KiCad, a free EDA CAD application.
-  *
-- * Copyright (C) 2021 KiCad Developers, see AUTHORS.txt for contributors.
-+ * Copyright (C 2021 KiCad Developers, see AUTHORS.txt for contributors.
-  *
-  * This program is free software: you can redistribute it and/or modify it
-  * under the terms of the GNU General Public License as published by the
-  * Free Software Foundation, either version 3 of the License, or (at your
-- * option) any later version.
-+ * option any later version.
-  *
-  * This program is distributed in the hope that it will be useful, but
-  * WITHOUT ANY WARRANTY; without even the implied warranty of
 @@ -28,1100 +28,1100 @@
  #include <vector>
  #include <bitmaps/bitmaps_list.h>
@@ -2215,5 +2202,3 @@ index 9632042986..dcf22f6bf2 100644
  };
  
 -- 
-2.36.1.windows.1
-
