@@ -1,7 +1,7 @@
-From 72f599e8922fe96a50942570fe1057bca4ed6160 Mon Sep 17 00:00:00 2001
+From 9d38bedb042c17e8c3141142611e2c2f35dc0bd2 Mon Sep 17 00:00:00 2001
 From: Tim Stahlhut <stahta01@gmail.com>
 Date: Fri, 3 Jun 2022 04:41:45 -0400
-Subject: Fix build error
+Subject: Add wxString header and remove wxT macro
 
 ---
  include/bitmap_store.h | 4 +++-
@@ -30,5 +30,3 @@ index 0d11546785..e176792a98 100644
  private:
  
 -- 
-2.36.1.windows.1
-
