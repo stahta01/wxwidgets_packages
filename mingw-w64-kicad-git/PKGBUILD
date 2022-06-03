@@ -61,6 +61,8 @@ source=(
   '013-ki-6.0-Remove-all-non-include-code.patch'
   '014-ki-6.0-comment-out-includes.patch'
   '015-ki-6.99-Replace-wxT-with-wxT_2-in-bitmap_info.h.patch'
+  '016-ki-6.99-Convert-to-using-std-string-in-bitmap_info.h.patch'
+  '017-ki-6.99-Fix-build-error.patch'
 #  "${_sourcedir}"::"git+https://github.com/KiCad/kicad-source-mirror.git#commit=${_git_commit}"
   "${_sourcedir}"::"git+https://github.com/KiCad/kicad-source-mirror.git"
 )
@@ -75,6 +77,8 @@ sha256sums=('ac419b1ce1d512b2003211a936f1f2172d5d988f5db7d061169f22d20d95a5b7'
             '48c91c8e2f040ee42acd24d9f5a3cd55000165d3925f9b462ba70a26665476e5'
             '1f43decb655dc64b7bc3c7138f279db9215b0501cb3742bc2e2ce091d0696982'
             '278e20f69382c402a882d2232db5cd1bf22596615decc18b00f3894edc086ddf'
+            'SKIP'
+            'SKIP'
             'SKIP'
             'SKIP'
             'SKIP')
@@ -99,12 +103,8 @@ prepare() {
 #  patch -p1 -i "${srcdir}"/006-manifest-remove-win10-11-manifest-support.patch
 #  patch -p1 -i "${srcdir}"/007-Remove_UTF-8_CodePage_from_manifests.patch
 #  patch -Np1 -i "${srcdir}"/008-ki-5.99-Add-missing-header-that-broke-msvc-builds.patch
-   patch -Np1 -i "${srcdir}"/010-ki-6.0-comment-out-code-try-1.patch
-   patch -Np1 -i "${srcdir}"/011-ki-6.0-code-edits.patch
-   patch -Np1 -i "${srcdir}"/012-ki-6.0-remove-code-second-time.patch
-   patch -Np1 -i "${srcdir}"/013-ki-6.0-Remove-all-non-include-code.patch
-   patch -Np1 -i "${srcdir}"/014-ki-6.0-comment-out-includes.patch
-   patch -Np1 -i "${srcdir}"/015-ki-6.99-Replace-wxT-with-wxT_2-in-bitmap_info.h.patch
+   patch -Np1 -i "${srcdir}"/016-ki-6.99-Convert-to-using-std-string-in-bitmap_info.h.patch
+   patch -Np1 -i "${srcdir}"/017-ki-6.99-Fix-build-error.patch
 }
 
 build() {
