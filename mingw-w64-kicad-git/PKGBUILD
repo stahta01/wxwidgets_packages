@@ -65,15 +65,8 @@ sha256sums=('ac419b1ce1d512b2003211a936f1f2172d5d988f5db7d061169f22d20d95a5b7'
             '550397b8d2ba66b924933020e409e868d3e4b2352a235f329798bc631b9fd28f'
             'b32a7a0734e1d47ada234130d7b9a4ccc06f62e765bf519a4b00efa8f59c48bc'
             '833e6bdb19545c2943c3045c6854527a35ab7a5be80bdca6184c153d6b6a22ed'
-            '4e9ec2f24dbe5a8020dcc56a7dac004fe0db9090eaaa985293d165e3a33d69aa'
-            '00d735add20ff9de9f20eb02aeec23a0ff45a8abe39969654d4a2a8fa49c030b'
-            '48c91c8e2f040ee42acd24d9f5a3cd55000165d3925f9b462ba70a26665476e5'
-            '1f43decb655dc64b7bc3c7138f279db9215b0501cb3742bc2e2ce091d0696982'
-            '278e20f69382c402a882d2232db5cd1bf22596615decc18b00f3894edc086ddf'
-            'SKIP'
-            'SKIP'
-            'SKIP'
-            'SKIP'
+            '3ee6f44200f635423c55dc1fc65ad496672ade6643efd03b13d955a61f185624'
+            '51925d6374bb612eddc48255b8afc1d206e4eaeeaeb25a85d0a441607f19479a'
             'SKIP')
 _doc=("ca" "de" "en" "es" "fr" "id" "it" "ja" "nl" "pl" "ru" "zh")
 _sub=("footprints" "symbols" "templates" "packages3D")
@@ -94,7 +87,7 @@ prepare() {
   patch -Np1 -i "${srcdir}"/003-ki-6.0-code-fixes-for-GNUC-CLANG.patch
   patch -Np1 -i "${srcdir}"/005-ki-6.0-rewrite-kiwin32_rc_for_clang.patch
   patch -Np1 -i "${srcdir}"/006-ki-6.0-manifest-remove-win10-11-manifest-support.patch
-#  patch -Np1 -i "${srcdir}"/007-ki-6.0-Remove_UTF-8_CodePage_from_manifests.patch
+  patch -Np1 -i "${srcdir}"/007-ki-6.0-Remove_UTF-8_CodePage_from_manifests.patch
 #  patch -Np1 -i "${srcdir}"/008-ki-5.99-Add-missing-header-that-broke-msvc-builds.patch
   patch -Np1 -i "${srcdir}"/009-ki-6.99-Convert-to-using-std-string-in-bitmap_info.h.patch
   patch -Np1 -i "${srcdir}"/010-ki-6.99-Add-wxString-header.patch
