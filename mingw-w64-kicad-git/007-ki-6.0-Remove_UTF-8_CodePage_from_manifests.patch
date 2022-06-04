@@ -1,11 +1,10 @@
-From f1a2b80383c97607059ef66711d42ed3f6755265 Mon Sep 17 00:00:00 2001
+From 45fbfcbb393a0d5ac519d2b4b62a0d38de429fb1 Mon Sep 17 00:00:00 2001
 From: Tim Stahlhut <stahta01@gmail.com>
-Date: Tue, 24 May 2022 13:39:58 -0400
+Date: Fri, 3 Jun 2022 13:44:33 -0400
 Subject: Remove UTF-8 CodePage from manifests
 
-The UCRT64 enviroment fails to create the default config files when not
+The UCRT64 environment fails to create the default config files when not
 removed.
-
 ---
  resources/msw/manifests/x64.manifest                | 1 -
  resources/msw/manifests/x64_dpi_aware_pmv2.manifest | 1 -
@@ -14,7 +13,7 @@ removed.
  4 files changed, 4 deletions(-)
 
 diff --git a/resources/msw/manifests/x64.manifest b/resources/msw/manifests/x64.manifest
-index a5f27f64b9..a25122a5ba 100644
+index 6b11d6f504..0c65d72773 100644
 --- a/resources/msw/manifests/x64.manifest
 +++ b/resources/msw/manifests/x64.manifest
 @@ -20,7 +20,6 @@
@@ -26,7 +25,7 @@ index a5f27f64b9..a25122a5ba 100644
      </asmv3:windowsSettings>
    </asmv3:application>
 diff --git a/resources/msw/manifests/x64_dpi_aware_pmv2.manifest b/resources/msw/manifests/x64_dpi_aware_pmv2.manifest
-index 34e0ffc8e9..80e36f7552 100644
+index ee246a65b1..36454a0d50 100644
 --- a/resources/msw/manifests/x64_dpi_aware_pmv2.manifest
 +++ b/resources/msw/manifests/x64_dpi_aware_pmv2.manifest
 @@ -14,7 +14,6 @@
@@ -38,7 +37,7 @@ index 34e0ffc8e9..80e36f7552 100644
        <dpiAware xmlns="http://schemas.microsoft.com/SMI/2005/WindowsSettings">true</dpiAware>
        <longPathAware xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">true</longPathAware>
 diff --git a/resources/msw/manifests/x86.manifest b/resources/msw/manifests/x86.manifest
-index 2c8b801f87..13c5aacf1e 100644
+index c0de5e0970..b471641d26 100644
 --- a/resources/msw/manifests/x86.manifest
 +++ b/resources/msw/manifests/x86.manifest
 @@ -20,7 +20,6 @@
@@ -50,7 +49,7 @@ index 2c8b801f87..13c5aacf1e 100644
      </asmv3:windowsSettings>
    </asmv3:application>
 diff --git a/resources/msw/manifests/x86_dpi_aware_pmv2.manifest b/resources/msw/manifests/x86_dpi_aware_pmv2.manifest
-index 8c2d961862..7551e1d005 100644
+index e6c712ed87..93a0b560ce 100644
 --- a/resources/msw/manifests/x86_dpi_aware_pmv2.manifest
 +++ b/resources/msw/manifests/x86_dpi_aware_pmv2.manifest
 @@ -14,7 +14,6 @@
