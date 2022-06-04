@@ -3,7 +3,9 @@ From: Tim Stahlhut <stahta01@gmail.com>
 Date: Fri, 3 Jun 2022 04:12:07 -0400
 Subject: Convert to using "std::string" in bitmap_info.h
 
-This was needed to avoid a wxString bug triggered by GCC 12.1.0.
+This was needed to avoid a build-time bug triggered by GCC 12.1.0;
+it might be a resource issue, like computer memory,
+instead of an wxWidgets wxString issue.
 
 ---
  include/bitmaps/bitmap_info.h | 2178 ++++++++++++++++-----------------
