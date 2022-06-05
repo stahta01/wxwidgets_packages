@@ -1,7 +1,7 @@
 From d98c862eb155718d32b647e5f9f2070f92cdb284 Mon Sep 17 00:00:00 2001
 From: Tim Stahlhut <stahta01@gmail.com>
 Date: Sat, 4 Jun 2022 11:05:04 -0400
-Subject: cmake GCC build fix of bitmap_info.h
+Subject: cmake GCC build fix of bitmap_info.h.in
 
 Remove wxT macro that should not be used in wx 3.0 or later.
 Use std::string instead of wxString to avoid weird MinGW64 GCC bug.

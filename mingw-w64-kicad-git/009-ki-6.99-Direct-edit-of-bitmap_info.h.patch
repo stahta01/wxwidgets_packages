@@ -1,0 +1,38 @@
+From 8a7861c86a2a1c1616fa1a630cd7fa9f2b08215f Mon Sep 17 00:00:00 2001
+From: Tim Stahlhut <stahta01@gmail.com>
+Date: Sat, 4 Jun 2022 17:46:06 -0400
+Subject: Direct edit of bitmap_info.h
+
+---
+ include/bitmaps/bitmap_info.h | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
+
+diff --git a/include/bitmaps/bitmap_info.h b/include/bitmaps/bitmap_info.h
+index 65b519b91b..aabbeeba39 100644
+--- a/include/bitmaps/bitmap_info.h
++++ b/include/bitmaps/bitmap_info.h
+@@ -26,16 +26,15 @@
+ #define KICAD_BITMAP_INFO_H
+ 
+ #include <vector>
++#include <string>
+ #include <bitmaps/bitmaps_list.h>
+ 
+-#include <wx/string.h> // wxT
+-
+ struct BITMAP_INFO
+ {
+-    BITMAPS  id;
+-    wxString filename;
+-    int      height;
+-    wxString theme;
++    BITMAPS     id;
++    std::string filename;
++    int         height;
++    std::string theme;
+ };
+ 
+ 
+-- 
+2.36.1.windows.1
+
